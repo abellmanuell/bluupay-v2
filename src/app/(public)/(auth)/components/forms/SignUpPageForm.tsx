@@ -1,41 +1,52 @@
-"use client"
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import _ from 'lodash';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import FormHelperText from '@mui/material/FormHelperText';
-import { Alert } from '@mui/material';
+"use client";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import _ from "lodash";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import { Alert } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
+import { authClient } from "@/lib/auth/client";
+import { redirect } from "next/navigation";
 
 /**
  * Form Validation Schema
  */
 const schema = z
   .object({
-    displayName: z.string().nonempty('You must enter your name'),
-    email: z.string().email('You must enter a valid email').nonempty('You must enter an email'),
+    displayName: z.string().nonempty("You must enter your name"),
+    email: z
+      .string()
+      .email("You must enter a valid email")
+      .nonempty("You must enter an email"),
     password: z
       .string()
-      .nonempty('Please enter your password.')
-      .min(8, 'Password is too short - should be 8 chars minimum.'),
-    passwordConfirm: z.string().nonempty('Password confirmation is required'),
-    acceptTermsConditions: z.boolean().refine((val) => val === true, 'The terms and conditions must be accepted.')
+      .nonempty("Please enter your password.")
+      .min(8, "Password is too short - should be 8 chars minimum."),
+    passwordConfirm: z.string().nonempty("Password confirmation is required"),
+    acceptTermsConditions: z
+      .boolean()
+      .refine(
+        (val) => val === true,
+        "The terms and conditions must be accepted.",
+      ),
   })
   .refine((data) => data.password === data.passwordConfirm, {
-    message: 'Passwords must match',
-    path: ['passwordConfirm']
+    message: "Passwords must match",
+    path: ["passwordConfirm"],
   });
 
 const defaultValues = {
-  displayName: '',
-  email: '',
-  password: '',
-  passwordConfirm: '',
-  acceptTermsConditions: false
+  displayName: "",
+  email: "",
+  password: "",
+  passwordConfirm: "",
+  acceptTermsConditions: false,
 };
 
 export type FormType = {
@@ -44,17 +55,40 @@ export type FormType = {
   email: string;
 };
 
-function AuthJsCredentialsSignUpForm() {
-  const { control, formState, handleSubmit, setError } = useForm({
-    mode: 'onChange',
+function SignUpPageForm() {
+  const { control, formState, handleSubmit } = useForm({
+    mode: "onChange",
     defaultValues,
-    resolver: zodResolver(schema)
+    resolver: zodResolver(schema),
   });
 
   const { isValid, dirtyFields, errors } = formState;
 
-  async function onSubmit(formData: FormType) {
-    const { displayName, email, password } = formData;
+  async function onSubmit({
+    displayName,
+    email,
+    password,
+  }: {
+    displayName: string;
+    email: string;
+    password: string;
+  }) {
+    const { data, error } = await authClient.signUp.email({
+      name: displayName,
+      email,
+      password,
+    });
+
+    if (error) {
+      enqueueSnackbar({
+        message: error.message,
+        variant: "error",
+      });
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(data);
+      redirect("/onboarding");
+    }
   }
 
   return (
@@ -70,7 +104,7 @@ function AuthJsCredentialsSignUpForm() {
           severity="error"
           sx={(theme) => ({
             backgroundColor: theme.palette.error.light,
-            color: theme.palette.error.dark
+            color: theme.palette.error.dark,
           })}
         >
           {errors?.root?.message}
@@ -152,14 +186,11 @@ function AuthJsCredentialsSignUpForm() {
           <FormControl error={!!errors.acceptTermsConditions}>
             <FormControlLabel
               label="I agree with Terms and Privacy Policy"
-              control={
-                <Checkbox
-                  size="small"
-                  {...field}
-                />
-              }
+              control={<Checkbox size="small" {...field} />}
             />
-            <FormHelperText>{errors?.acceptTermsConditions?.message}</FormHelperText>
+            <FormHelperText>
+              {errors?.acceptTermsConditions?.message}
+            </FormHelperText>
           </FormControl>
         )}
       />
@@ -178,4 +209,4 @@ function AuthJsCredentialsSignUpForm() {
   );
 }
 
-export default AuthJsCredentialsSignUpForm;
+export default SignUpPageForm;
