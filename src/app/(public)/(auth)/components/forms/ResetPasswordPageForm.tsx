@@ -5,7 +5,6 @@ import TextField from "@mui/material/TextField";
 import _ from "lodash";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import FormLabel from "@mui/material/FormLabel";
 import { authClient } from "@/lib/auth/client";
 import { enqueueSnackbar } from "notistack";
 import { redirect } from "next/navigation";
