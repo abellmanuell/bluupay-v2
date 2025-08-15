@@ -1,3 +1,3 @@
-import ExampleView from '../components/views/ExampleView';
+import ExampleView from "../components/views/ExampleView";
 
 export default ExampleView;

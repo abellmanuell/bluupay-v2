@@ -13,6 +13,7 @@ import { Alert } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { authClient } from "@/lib/auth/client";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 /**
  * Form Validation Schema
@@ -56,6 +57,8 @@ export type FormType = {
 };
 
 function SignUpPageForm() {
+  const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
+
   const { control, formState, handleSubmit } = useForm({
     mode: "onChange",
     defaultValues,
@@ -73,6 +76,7 @@ function SignUpPageForm() {
     email: string;
     password: string;
   }) {
+    setIsSubmitLoading(true);
     const { data, error } = await authClient.signUp.email({
       name: displayName,
       email,
@@ -80,14 +84,13 @@ function SignUpPageForm() {
     });
 
     if (error) {
+      setIsSubmitLoading(false);
       enqueueSnackbar({
         message: error.message,
         variant: "error",
       });
     } else {
-      // eslint-disable-next-line no-console
-      console.log(data);
-      redirect("/onboarding");
+      redirect("/otp");
     }
   }
 
@@ -199,11 +202,15 @@ function SignUpPageForm() {
         color="secondary"
         className="mt-6 w-full"
         aria-label="Register"
-        disabled={_.isEmpty(dirtyFields) || !isValid}
+        disabled={
+          !isSubmitLoading
+            ? _.isEmpty(dirtyFields) || !isValid
+            : isSubmitLoading
+        }
         type="submit"
         size="large"
       >
-        Create your free account
+        {isSubmitLoading ? "Loading..." : "Create your free account"}
       </Button>
     </form>
   );

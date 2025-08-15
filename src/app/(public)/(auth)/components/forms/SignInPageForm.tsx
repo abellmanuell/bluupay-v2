@@ -14,6 +14,7 @@ import FormLabel from "@mui/material/FormLabel";
 import { authClient } from "@/lib/auth/client";
 import { enqueueSnackbar } from "notistack";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 /**
  * Form Validation Schema
@@ -38,6 +39,8 @@ const defaultValues = {
 };
 
 function SignInPageForm() {
+  const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
+
   const { control, formState, handleSubmit } = useForm<FormType>({
     mode: "onChange",
     defaultValues,
@@ -47,18 +50,17 @@ function SignInPageForm() {
   const { isValid, dirtyFields, errors } = formState;
 
   async function onSubmit(d) {
-    // reset(defaultValues);
+    setIsSubmitLoading(true);
     const { data, error } = await authClient.signIn.email(d);
 
     if (error) {
+      setIsSubmitLoading(false);
       enqueueSnackbar({
         message: error.message,
         variant: "error",
       });
     } else {
-      // eslint-disable-next-line no-console
-      console.log(data);
-      redirect("/onboarding");
+      redirect("/dashboard");
     }
   }
 
@@ -130,11 +132,15 @@ function SignInPageForm() {
         color="secondary"
         className="w-full"
         aria-label="Sign in"
-        disabled={_.isEmpty(dirtyFields) || !isValid}
+        disabled={
+          !isSubmitLoading
+            ? _.isEmpty(dirtyFields) || !isValid
+            : isSubmitLoading
+        }
         type="submit"
         size="medium"
       >
-        Sign in
+        {isSubmitLoading ? "Loading..." : "Sign in"}
       </Button>
 
       <div className="flex items-center py-4">

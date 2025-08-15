@@ -16,11 +16,13 @@ export default async function AuthGuardRedirect({
 }) {
   const incomingHeaders = await headers();
 
-  const { data: session } = await authClientServer.getSession({
+  const data = await authClientServer.getSession({
     fetchOptions: {
       headers: incomingHeaders,
     },
   });
+
+  console.log(data);
 
   // Pass session info to client for redirect logic
   return (

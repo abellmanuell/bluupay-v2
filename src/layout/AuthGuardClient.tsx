@@ -20,6 +20,8 @@ export default function AuthGuardClient({
   const router = useRouter();
   const [checking, setChecking] = useState(true);
 
+  console.log(requireAuth && !session?.user, guestOnly && session?.user);
+
   useEffect(() => {
     if (requireAuth && !session?.user) {
       router.replace("/sign-in");
@@ -31,7 +33,7 @@ export default function AuthGuardClient({
       session?.user &&
       !allowedRoles.includes(session.user.role)
     ) {
-      notFound() // or some error page
+      notFound(); // or some error page
     } else {
       setChecking(false);
     }
