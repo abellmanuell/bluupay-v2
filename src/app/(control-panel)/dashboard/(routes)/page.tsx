@@ -1,3 +1,3 @@
-import ExampleView from "../components/views/ExampleView";
+import DashboardView from "../components/views/DashboardView";
 
-export default ExampleView;
+export default DashboardView;
