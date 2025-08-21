@@ -10,28 +10,41 @@ import { useGetWidget } from "../../../api/hooks/widgets/useGetWidget";
 import ReactApexChart from "react-apexcharts";
 
 /**
+ * Default widget values (fallback).
+ */
+const defaultWidget: ConversionsWidgetType = {
+  amount: 1200,
+  labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+  series: [
+    {
+      name: "Conversions",
+      data: [200, 300, 400, 300],
+    },
+  ],
+};
+
+/**
  * The conversions widget.
  */
 function ConversionsWidget() {
   const theme = useTheme();
   const { data: widget } = useGetWidget<ConversionsWidgetType>("conversions");
 
-  const series = widget?.series || [];
-  const amount = widget?.amount;
-  const labels = widget?.labels;
+  // Use API data if available, otherwise fallback
+  const data = widget ?? defaultWidget;
+
+  const series = data.series;
+  const amount = data.amount;
+  const labels = data.labels;
 
   const chartOptions: ApexOptions = {
     chart: {
-      animations: {
-        enabled: false,
-      },
+      animations: { enabled: false },
       fontFamily: "inherit",
       foreColor: "inherit",
       height: "100%",
       type: "area",
-      sparkline: {
-        enabled: true,
-      },
+      sparkline: { enabled: true },
     },
     colors: [theme.palette.secondary.main],
     fill: {
@@ -52,10 +65,6 @@ function ConversionsWidget() {
     },
   };
 
-  if (!widget) {
-    return null;
-  }
-
   return (
     <Paper className="flex flex-auto flex-col overflow-hidden rounded-xl shadow-sm">
       <div className="m-4 mb-0 flex items-start justify-between">
@@ -66,10 +75,12 @@ function ConversionsWidget() {
           <Chip size="small" className="text-sm font-medium" label="30 days" />
         </div>
       </div>
+
       <div className="mx-4 mt-3 flex flex-col gap-3 lg:flex-row lg:items-center">
         <Typography className="text-6xl leading-none font-bold tracking-tighter">
           {amount.toLocaleString("en-US")}
         </Typography>
+
         <div className="flex lg:flex-col">
           <FuseSvgIcon size={20} className="text-red-500">
             lucide:trending-down
@@ -83,6 +94,7 @@ function ConversionsWidget() {
           </Typography>
         </div>
       </div>
+
       <div className="-mb-2 flex h-20 flex-auto flex-col">
         <ReactApexChart
           options={chartOptions}
@@ -96,4 +108,3 @@ function ConversionsWidget() {
 }
 
 export default ConversionsWidget;
-
