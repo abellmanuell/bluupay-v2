@@ -21,13 +21,39 @@ function GithubIssuesWidget() {
   const { data: widget, isLoading } =
     useGetWidget<GithubIssuesDataType>("githubIssues");
 
-  const overview = widget?.overview ?? {};
-  const series = widget?.series ?? {};
-  const ranges = widget?.ranges ?? {};
-  const labels = widget?.labels ?? [];
+  // ✅ Default fallback structure
+  const defaultWidget: GithubIssuesDataType = {
+    overview: {
+      default: {
+        "new-issues": 0,
+        "closed-issues": 0,
+        fixed: 0,
+        "wont-fix": 0,
+        "re-opened": 0,
+        "needs-triage": 0,
+      },
+    },
+    series: {
+      default: [
+        { name: "New Issues", data: [] },
+        { name: "Closed Issues", data: [] },
+      ],
+    },
+    ranges: {
+      default: "Default",
+    },
+    labels: [],
+  };
+
+  const mergedWidget = { ...defaultWidget, ...widget };
+
+  const overview = mergedWidget.overview;
+  const series = mergedWidget.series;
+  const ranges = mergedWidget.ranges;
+  const labels = mergedWidget.labels;
 
   const rangeKeys = Object.keys(ranges);
-  const currentRange = rangeKeys[tabValue] ?? rangeKeys[0];
+  const currentRange = rangeKeys[tabValue] ?? rangeKeys[0] ?? "default";
 
   const chartOptions: ApexOptions = {
     chart: {
@@ -73,18 +99,12 @@ function GithubIssuesWidget() {
     return <FuseLoading />;
   }
 
-  if (!widget || awaitRender) {
+  if (awaitRender) {
     return null;
   }
 
-  const currentOverview = overview[currentRange] ?? {
-    "new-issues": 0,
-    "closed-issues": 0,
-    fixed: 0,
-    "wont-fix": 0,
-    "re-opened": 0,
-    "needs-triage": 0,
-  };
+  const currentOverview =
+    overview[currentRange] ?? defaultWidget.overview.default;
 
   return (
     <Paper className="flex flex-auto flex-col overflow-hidden rounded-xl p-6 shadow-sm">
