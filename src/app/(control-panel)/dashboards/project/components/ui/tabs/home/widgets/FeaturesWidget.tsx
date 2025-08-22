@@ -42,7 +42,7 @@ function FeaturesWidget() {
       {/* Main Count */}
       <div className="mt-4 text-center">
         <Typography className="text-7xl leading-none font-bold tracking-tight sm:text-8xl">
-          {data?.count ?? 0}
+          {0}
         </Typography>
         <Typography className="text-lg font-medium" color="text.secondary">
           {data?.name ?? "Features"}
@@ -55,7 +55,7 @@ function FeaturesWidget() {
         color="text.secondary"
       >
         <span className="truncate">{data?.extra?.name ?? "Enabled"}:</span>
-        <b>{data?.extra?.count ?? 0}</b>
+        <b>{0}</b>
       </Typography>
     </Paper>
   );

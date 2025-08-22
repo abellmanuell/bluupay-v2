@@ -35,10 +35,10 @@ function OverdueWidget() {
       {/* Main Count */}
       <div className="mt-4 text-center">
         <Typography className="text-7xl leading-none font-bold tracking-tight sm:text-8xl">
-          {data?.count ?? 4}
+          {4}
         </Typography>
         <Typography className="text-lg font-medium" color="text.secondary">
-          {data?.name ?? "Overdue Tasks"}
+          {"Overdue Tasks"}
         </Typography>
       </div>
 
@@ -47,8 +47,8 @@ function OverdueWidget() {
         className="mt-5 mb-6 flex w-full items-baseline justify-center gap-2"
         color="text.secondary"
       >
-        <span className="truncate">{data?.extra?.name ?? "Tasks"}:</span>
-        <b>{data?.extra?.count ?? 0}</b>
+        <span className="truncate">{"Tasks"}:</span>
+        <b>{0}</b>
       </Typography>
     </Paper>
   );

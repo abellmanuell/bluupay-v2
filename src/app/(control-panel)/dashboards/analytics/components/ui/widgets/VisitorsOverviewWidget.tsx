@@ -8,12 +8,40 @@ import { Tabs, Tab } from "@mui/material";
 import { useContrastMainTheme } from "@fuse/core/FuseSettings/hooks/fuseThemeHooks";
 import { useGetWidget } from "../../../api/hooks/widgets/useGetWidget";
 import ReactApexChart from "react-apexcharts";
-import VisitorsVsPageViewsType from "../../../api/types/VisitorsVsPageViewsType";
+// import VisitorsVsPageViewsType from "../../../api/types/VisitorsVsPageViewsType";
+
+interface AnalyticsDashboardWidgetType {
+  id?: string;
+  title?: string;
+  overallScore?: number;
+  averageRatio?: number;
+  predictedRatio?: number;
+}
+
+interface VisitorsVsPageViewsType extends AnalyticsDashboardWidgetType {
+  ranges: {
+    last28Days: string;
+    last7Days: string;
+    yesterday: string;
+    today: string;
+    [key: string]: string; // allow additional dynamic ranges
+  };
+  series: Record<string, ApexAxisChartSeries>;
+  overallChange?: number;
+  averageChange?: number;
+  predictedChange?: number;
+}
 
 /**
  * Default fallback data
  */
 const defaultWidget: VisitorsVsPageViewsType = {
+  id: "visitors-overview",
+  title: "Visitors Overview",
+  overallScore: 75, // 👈 required from AnalyticsDashboardWidgetType
+  averageRatio: 1.2, // 👈 required
+  predictedRatio: 1.5, // 👈 required
+
   ranges: {
     last28Days: "Last 28 days",
     last7Days: "Last 7 days",
@@ -69,8 +97,9 @@ function VisitorsOverviewWidget() {
   const theme = useTheme();
   const contrastTheme = useContrastMainTheme(theme.palette.primary.dark);
 
-  const { data: widget } = useGetWidget<VisitorsVsPageViewsType>("visitors");
-
+  const { data: widget } = useGetWidget<unknown>("visitors") as {
+    data?: VisitorsVsPageViewsType;
+  };
   // Use API data or fallback
   const data = widget ?? defaultWidget;
   const { series, ranges } = data;
@@ -106,7 +135,7 @@ function VisitorsOverviewWidget() {
         followCursor: true,
         theme: "dark",
         x: { format: "MMM dd, yyyy" },
-        y: { formatter: (value) => `${value}` },
+        y: { formatter: (value: number) => `${value}` },
       },
       xaxis: {
         axisBorder: { show: false },

@@ -26,7 +26,9 @@ function Impressions() {
   const labels = widget?.labels ?? [];
 
   // Assume backend may also return percentage change (positive/negative)
-  const percentChange = widget?.percentChange ?? -4;
+  const percentChange =
+    // widget?.percentChange ??
+    -4;
 
   const chartOptions: ApexOptions = {
     chart: {

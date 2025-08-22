@@ -13,7 +13,12 @@ import ReactApexChart from "react-apexcharts";
  * Default fallback in case API fails
  */
 const defaultWidget: ImpressionsWidgetType = {
-  series: [10, 20, 30, 40, 50, 60],
+  series: [
+    {
+      name: "Impressions",
+      data: [10, 20, 30, 40, 50, 60],
+    },
+  ],
   amount: 12345,
   labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 };
@@ -92,7 +97,7 @@ function Impressions() {
       <div className="-mb-2 flex h-20 flex-auto flex-col">
         <ReactApexChart
           options={chartOptions}
-          series={_.cloneDeep(series)}
+          series={_.cloneDeep(series)} // ✅ valid ApexAxisChartSeries
           type={chartOptions?.chart?.type}
           height={chartOptions?.chart?.height}
         />

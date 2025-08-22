@@ -35,7 +35,7 @@ function ScheduleWidget() {
       {/* Header */}
       <div className="flex flex-col items-start justify-between sm:flex-row">
         <Typography className="truncate text-lg leading-6 font-medium tracking-tight">
-          {widget?.title ?? "Schedule"}
+          {"Schedule"}
         </Typography>
         <div className="mt-3 sm:mt-0">
           <Tabs

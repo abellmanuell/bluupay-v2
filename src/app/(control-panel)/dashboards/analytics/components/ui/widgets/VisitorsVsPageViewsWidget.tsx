@@ -6,18 +6,44 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { Tooltip } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import _ from "lodash";
-import VisitorsVsPageViewsType from "../../../api/types/VisitorsVsPageViewsType";
+// import VisitorsVsPageViewsType from "../../../api/types/VisitorsVsPageViewsType";
 import { useGetWidget } from "../../../api/hooks/widgets/useGetWidget";
 import ReactApexChart from "react-apexcharts";
+
+interface AnalyticsDashboardWidgetType {
+  id?: string;
+  title?: string;
+  overallScore?: number;
+  averageRatio?: number;
+  predictedRatio?: number;
+}
+
+interface VisitorsVsPageViewsType extends AnalyticsDashboardWidgetType {
+  ranges: {
+    last28Days: string;
+    last7Days: string;
+    yesterday: string;
+    today: string;
+    [key: string]: string; // allow additional dynamic ranges
+  };
+  series: Record<string, ApexAxisChartSeries>;
+  overallChange?: number;
+  averageChange?: number;
+  predictedChange?: number;
+}
 
 /**
  * Visitors vs. Page Views widget.
  */
 function VisitorsVsPageViewsWidget() {
   const theme = useTheme();
-  const { data: widget } = useGetWidget<VisitorsVsPageViewsType>(
+  /* const { data: widget } = useGetWidget<VisitorsVsPageViewsType>(
     "visitorsVsPageViews",
-  );
+  ); */
+
+  const { data: widget } = useGetWidget<unknown>("visitorsVsPageViews") as {
+    data?: VisitorsVsPageViewsType;
+  };
 
   // ✅ Return early if no widget data
   if (!widget) {
@@ -227,7 +253,7 @@ function VisitorsVsPageViewsWidget() {
         <ReactApexChart
           className="h-full w-full flex-auto"
           options={chartOptions}
-          series={_.cloneDeep(series)}
+          // series={_.cloneDeep(series)}
           type={chartOptions?.chart?.type}
           height={chartOptions?.chart?.height}
         />

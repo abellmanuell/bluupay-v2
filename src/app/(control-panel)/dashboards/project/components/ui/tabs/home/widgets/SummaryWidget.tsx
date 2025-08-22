@@ -6,16 +6,19 @@ import { memo, useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import FuseLoading from "@fuse/core/FuseLoading";
-import WidgetDataType, {
+import WidgetDataType from "../../../../../api/types/home/WidgetDataType";
+import { useGetWidget } from "../../../../../api/hooks/widgets/useGetWidget";
+import {
+  RangeWidgetDataType,
   RangeType,
 } from "../../../../../api/types/home/WidgetDataType";
-import { useGetWidget } from "../../../../../api/hooks/widgets/useGetWidget";
 
 /**
  * The SummaryWidget widget.
  */
 function SummaryWidget() {
-  const { data: widget, isLoading } = useGetWidget<WidgetDataType>("summary");
+  const { data: widget, isLoading } =
+    useGetWidget<RangeWidgetDataType>("summary");
 
   const data = widget?.data ?? {
     count: {},

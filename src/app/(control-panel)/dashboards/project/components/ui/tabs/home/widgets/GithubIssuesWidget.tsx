@@ -35,8 +35,8 @@ function GithubIssuesWidget() {
     },
     series: {
       default: [
-        { name: "New Issues", data: [] },
-        { name: "Closed Issues", data: [] },
+        { name: "New Issues", type: "", data: [] },
+        { name: "Closed Issues", type: "", data: [] },
       ],
     },
     ranges: {

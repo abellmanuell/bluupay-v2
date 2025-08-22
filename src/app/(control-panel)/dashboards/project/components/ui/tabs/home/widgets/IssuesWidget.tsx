@@ -6,19 +6,20 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import FuseLoading from "@fuse/core/FuseLoading";
 import WidgetDataType from "../../../../../api/types/home/WidgetDataType";
 import { useGetWidget } from "../../../../../api/hooks/widgets/useGetWidget";
+import { SimpleWidgetDataType } from "../../../../../api/types/home/WidgetDataType";
 
 /**
  * The IssuesWidget widget.
  */
 function IssuesWidget() {
-  const { data: widget, isLoading } = useGetWidget<WidgetDataType>("issues");
+  const { data: widget, isLoading } = useGetWidget("issues");
 
   if (isLoading) {
     return <FuseLoading />;
   }
 
   // ✅ Default values in case API returns nothing or partial data
-  const defaultWidget: WidgetDataType = {
+  const defaultWidget = {
     title: "Issues",
     data: {
       count: 0,
